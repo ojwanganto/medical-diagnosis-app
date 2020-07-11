@@ -4,12 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
-    <title>Register Person</title>
+    <title>Register Patient</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css" integrity="sha384-5sAR7xN1Nv6T6+dT2mhtzEpVJvfS3NScPQTrOxhwjIuvcA67KV2R5Jz6kr4abQsz" crossorigin="anonymous">
     <link th:href="@{/style/local.css}" rel="stylesheet"></link>
-
 </head>
 
 <body>
@@ -24,11 +23,11 @@
     </div>
 </div>
 <div class="container my-5">
-    <h3> Register Person</h3>
+    <h3> Register patient</h3>
     <div class="card">
         <div class="card-body">
             <div class="col-md-10">
-                <form action="#" th:action="@{/person/add}" th:object="${person}" method="post">
+                <form action="#" th:action="@{/patient/add}" th:object="${patient}" method="post">
                     <div class="row">
                         <div class="form-group col-md-8">
                             <label for="firstName" class="col-form-label">First Name</label> <input type="text" th:field="*{firstName}" class="form-control" id="firstName" placeholder="First Name"> <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger"></span>
@@ -57,9 +56,12 @@
                             <label for="county" class="col-form-label">County</label> <input type="text" th:field="*{county}" class="form-control" id="county" placeholder="County"> <span th:if="${#fields.hasErrors('county')}" th:errors="*{county}" class="text-danger"></span>
                             <label for="subCounty" class="col-form-label">Sub-County</label> <input type="text" th:field="*{subCounty}" class="form-control" id="subCounty" placeholder="Sub-County"> <span th:if="${#fields.hasErrors('subCounty')}" th:errors="*{subCounty}" class="text-danger"></span>
                         </div>
+                        <div class="form-group col-md-8">
+                            <label for="county" class="col-form-label">Patient No</label> <input type="text" th:field="*{patientNumber}" class="form-control" id="patientNumber" placeholder="Patient No"> <span th:if="${#fields.hasErrors('patientNumber')}" th:errors="*{patientNumber}" class="text-danger"></span>
+                        </div>
 
                         <div class="col-md-6">
-                            <input type="submit" class="btn btn-primary" value="Save Person">
+                            <input type="submit" class="btn btn-primary" value="Save Patient">
                         </div>
 
                         <div class="form-group col-md-8"></div>

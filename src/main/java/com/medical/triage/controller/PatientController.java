@@ -1,6 +1,8 @@
 package com.medical.triage.controller;
 
+import com.medical.triage.entity.Patient;
 import com.medical.triage.entity.Person;
+import com.medical.triage.repository.PatientRepository;
 import com.medical.triage.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -19,38 +21,40 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Controller
-@RequestMapping(value = "/person/")
-public class PersonController {
+@RequestMapping(value = "/patient/")
+public class PatientController {
 
     @Autowired
     PersonRepository personRepository;
 
+    @Autowired
+    PatientRepository patientRepository;
+
     @GetMapping(value = "register")
-    public String addPerson(Person person) {
-        return "add-person";
+    public String addPerson(Patient patient) {
+        return "add-patient";
     }
 
     @PostMapping(value = "add")
-    public String savePerson(@Valid Person person, BindingResult result, Model model) {
+    public String savePerson(@Valid Patient patient, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            return "add-person";
+            return "add-patient";
         }
-        System.out.println("It is getting in the save code block");
-        personRepository.save(person);
+        patientRepository.save(patient);
         return "redirect:list";
 
     }
 
     @GetMapping("list")
     public String listPersons(Model model) {
-        model.addAttribute("persons", personRepository.findAll());
-        return "list-person";
+        model.addAttribute("patients", patientRepository.findAll());
+        return "list-patient";
 
     }
 
     @GetMapping("triage/{id}")
     public String triagePatient(@PathVariable("id") Integer id, Model model) {
-        Person person = personRepository.findById(id).get();
+        Person person = patientRepository.findById(id).get();
         Date dob = person.getDob();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String dobString = df.format(dob);

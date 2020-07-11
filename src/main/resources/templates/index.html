@@ -2,9 +2,264 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Community Health Facility</title>
+    <title>Patient Diagonosis App</title>
+
+    <style>
+        /* Add some padding on document's body to prevent the content
+        to go underneath the header and footer */
+        body{
+            padding-top: 100px;
+            padding-bottom: 40px;
+        }
+        .container{
+            width: 80%;
+            margin: 0 auto; /* Center the DIV horizontally */
+        }
+
+        .app-container{
+            width: 99%;
+            margin: 0 auto; /* Center the DIV horizontally */
+        }
+
+        .application-name{
+            width: 99%;
+            font-size: 1.7em;
+            margin: 0 auto; /* Center the DIV horizontally */
+        }
+
+        .facility-name{
+            width: 99%;
+            font-size: 1rem;
+            margin: 0; /* Center the DIV horizontally */
+        }
+        .fixed-header, .fixed-footer{
+            width: 100%;
+            position: fixed;
+            background: darkslategrey;
+            padding: 10px 0;
+            color: #fff;
+        }
+        .fixed-header{
+            top: 0;
+        }
+        .fixed-footer{
+            bottom: 0;
+        }
+
+        .container p{
+            line-height: 200px; /* Create scrollbar to test positioning */
+        }
+
+        .button3{
+             display:inline-block;
+             padding:0.3em 1.2em;
+             margin:0 0.3em 0.3em 0;
+             border-radius:2em;
+             box-sizing: border-box;
+             text-decoration:none;
+             font-family:'Roboto',sans-serif;
+             font-weight:300;
+             color:#FFFFFF;
+             background-color:#4eb5f1;
+             text-align:center;
+             transition: all 0.2s;
+        }
+        .button3:hover{
+             background-color:#4095c6;
+        }
+        @media all and (max-width:30em){
+             a.button3{
+                  display:block;
+                  margin:0.2em auto;
+                 }
+        }
+
+        .ui-draggable, .ui-droppable {
+            background-position: top;
+        }
+    </style>
+    <link rel="stylesheet" href="style/jquery-ui.css">
+<!--
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+-->
+    <script src="js/hmac-md5.js"></script>
+    <script src="js/enc-base64-min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            var availableTags = []
+            var selectedValues = []
+            var serverToken = ""
+            $("#testLogin").click(function () {
+
+                var uri = "https://authservice.priaid.ch/login";
+                var uri_sandbox = "https://sandbox-authservice.priaid.ch/login";
+                var uri_symptoms = "https://sandbox-healthservice.priaid.ch/symptoms";
+                var api_key = "ojwangwachiaje@gmail.com";
+                var secret_key = "Yt3e2HLq7m9MKj4c8";
+                var computedHash = CryptoJS.HmacMD5(uri_sandbox, secret_key);
+                var computedHashString = computedHash.toString(CryptoJS.enc.Base64);
+
+                jQuery.ajax({
+                    url: uri_sandbox,
+                    type: 'POST',
+                    data: {},
+                    beforeSend : function( xhr ) {
+                        xhr.setRequestHeader( 'Authorization', 'Bearer ' + api_key +  ':' + computedHashString);
+                    },
+                    success: function( response ) {
+                        console.log("Successfully logged in!");
+                        serverToken = response.Token
+                        jQuery.ajax({
+                            url: uri_symptoms,
+                            type: 'GET',
+                            data: {
+                                token:response.Token,
+                                language:'en-gb'
+                            },
+                            success: function( response ) {
+                                console.log("Successfully fetched symptoms");
+                                serverPayload = response
+
+                                for(i=0;i<response.length;i++) {
+                                    availableTags.push(response[i].Name)
+                                }
+                            }
+                        });
+                    }
+                });
+            });
+
+            $("#diagnosis").click(function () {
+                var uri_diagnosis = "https://sandbox-healthservice.priaid.ch/diagnosis";
+
+                jQuery.ajax({
+                    url: uri_diagnosis,
+                    type: 'GET',
+                    data: {
+                        token:serverToken,
+                        gender:'male',
+                        year_of_birth: 2010,
+                        language:'en-gb',
+                        symptoms: JSON.stringify(selectedValues)
+                    },
+                    success: function( response ) {
+                        console.log("Successfully fetched diagnosis");
+                        var diagnosisString = "";
+                        var specialityString = "";
+                        for (var i=0;i < response.length; i++) {
+                            diagnosisString = diagnosisString + response[i].Issue.Name + '<br/>'
+                            for (var j=0; j< response[i].Specialisation.length; j++) {
+                                specialityString = specialityString + response[i].Specialisation[j].Name + '<br/>'
+                            }
+                        }
+                        $('#diagnosisResult').html(diagnosisString)
+                        $('#specialization').html(specialityString)
+                        console.log(response)
+                    }
+                });
+            });
+
+            function split( val ) {
+                return val.split( /,\s*/ );
+            }
+            function extractLast( term ) {
+                return split( term ).pop();
+            }
+
+            $( "#tags" )
+            // don't navigate away from the field on tab when selecting an item
+                .on( "keydown", function( event ) {
+                    if ( event.keyCode === $.ui.keyCode.TAB &&
+                        $( this ).autocomplete( "instance" ).menu.active ) {
+                        event.preventDefault();
+                    }
+                })
+                .autocomplete({
+                    minLength: 0,
+                    source: function( request, response ) {
+                        // delegate back to autocomplete, but extract the last term
+                        response( $.ui.autocomplete.filter(
+                            availableTags, extractLast( request.term ) ) );
+                    },
+                    focus: function() {
+                        // prevent value inserted on focus
+                        return false;
+                    },
+                    select: function( event, ui ) {
+
+                        var terms = split( this.value );
+                        // remove the current input
+                        terms.pop();
+                        // add the selected item
+                        terms.push( ui.item.value );
+                        var symptomObj = getByValue(serverPayload,ui.item.value )
+                        console.log("Object: " + symptomObj)
+                        if (symptomObj != null) {
+                            selectedValues.push(symptomObj.ID)
+                        }
+                        // add placeholder to get the comma-and-space at the end
+                        terms.push( "" );
+                        this.value = terms.join( ", " );
+                        console.log(selectedValues)
+                        return false;
+                    }
+                });
+        });
+
+        function getByValue(arr, value) {
+            console.log("Looking for value: " + value)
+            for (var i=0; i < arr.length; i++) {
+                console.log("Current: " + arr[i])
+                if (arr[i].Name == value) {
+                    return arr[i];
+                }
+            }
+            return null;
+        }
+    </script>
 </head>
 <body>
-    <h3>Welcome to the Community Health Facility, Triage diagnosis</h3>
+<div class="fixed-header">
+    <div class="application-name">
+        <div>
+            Patient Diagnosis App
+        </div>
+        <div class="facility-name">
+            Karungu Sub-County Hospital(13567)
+        </div>
+    </div>
+</div>
+<div class="app-container">
+    <input type="button" class="button3" onclick="location.href='/person/register'">Register Person</input>
+
+</div>
+<br/>
+<div>
+    <button id="testLogin">Get symptoms from the server</button>
+</div>
+<br/>
+<div class="ui-widget">
+    <p><b>Complaints today: </b></p>
+    <input id="tags" size="100">
+    <br/>
+    <br/>
+    <button id="diagnosis">Get Diagnosis</button>
+    <br/>
+
+</div>
+<div>
+    <p><b>Possible Diagnosis</b></p>
+    <br/>
+    <div id="diagnosisResult"></div>
+</div>
+
+<div>
+    <p><b>Specialities</b></p>
+    <br/>
+    <div id="specialization"></div>
+</div>
 </body>
 </html>

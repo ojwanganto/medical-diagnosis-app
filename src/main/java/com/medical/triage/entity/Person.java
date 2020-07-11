@@ -1,11 +1,14 @@
 package com.medical.triage.entity;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.NotBlank;
+import java.util.Date;
 
 /**
  * Defines properties of a general person
@@ -27,6 +30,11 @@ public class Person {
     @NotBlank(message = "Please provide a last name")
     private String lastName;
 
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private Date dob;
+
+    private String sex;
+
     @Column(name = "postal_address")
     private String postalAddress;
 
@@ -47,10 +55,12 @@ public class Person {
     public Person() {
     }
 
-    public Person(String firstName, String middleName, String lastName) {
+    public Person(String firstName, String middleName, String lastName, String sex, Date dob) {
         this.firstName = firstName;
         this.middleName = middleName;
         this.lastName = lastName;
+        this.sex = sex;
+        this.dob = dob;
     }
 
     public Person(String firstName, String middleName, String lastName, String identifer) {
@@ -146,5 +156,21 @@ public class Person {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public Date getDob() {
+        return dob;
+    }
+
+    public void setDob(Date dob) {
+        this.dob = dob;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 }

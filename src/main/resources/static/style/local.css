@@ -1,0 +1,48 @@
+.application-name{
+    width: 99%;
+    font-size: 1.7em;
+    margin: 0 auto; /* Center the DIV horizontally */
+}
+
+.facility-name{
+    width: 99%;
+    font-size: 1rem;
+    margin: 0; /* Center the DIV horizontally */
+}
+.fixed-header, .fixed-footer{
+    width: 100%;
+    position: fixed;
+    background: darkslategrey;
+    padding: 10px 0;
+    color: #fff;
+}
+.fixed-header{
+    top: 0;
+}
+
+#alert{
+    color: lightseagreen;
+    font-size: 1.3rem;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 50px;
+}
+
+.diagnosis {
+    color: black;
+    line-height: 1.5;
+    border: 2px darkslategrey solid;
+    border-radius: 10px;
+    padding: 10px 5px 5px 10px;
+    margin: 5px 3px;
+    width: 49%;
+}
+
+.left-align {
+    float: left;
+}
+
+body{
+    padding-top: 100px;
+}
+
