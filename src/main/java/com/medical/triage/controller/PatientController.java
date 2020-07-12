@@ -1,6 +1,7 @@
 package com.medical.triage.controller;
 
 import com.medical.triage.entity.Patient;
+import com.medical.triage.entity.PatientVisit;
 import com.medical.triage.entity.Person;
 import com.medical.triage.repository.PatientRepository;
 import com.medical.triage.repository.PatientVisitRepository;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Handles patient related web requests
@@ -91,9 +93,22 @@ public class PatientController {
         String yob = dobString.split("-")[0];
         Integer yobInt = Integer.parseInt(yob);
         model.addAttribute("sex", person.getSex());
-        model.addAttribute("yob", yobInt);
+        model.addAttribute("yob", yobInt);//this is required by apimedic
         model.addAttribute("patientId", id);
         return "triage";
+    }
+
+    /**
+     * Returns visits for a patient
+     * @param id
+     * @param model
+     * @return
+     */
+    @GetMapping("visits/{id}")
+    public String getPatientVisits(@PathVariable("id") Integer id, Model model) {
+        List<PatientVisit> patientVisits = patientVisitRepository.findPatientVisitByPatient(patientRepository.findById(id).get());
+        model.addAttribute("visits", patientVisits);
+        return "list-patient-visit";
     }
 
     /**
