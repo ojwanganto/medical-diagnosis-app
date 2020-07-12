@@ -7,14 +7,29 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
+/**
+ * This model represents all care health care providers who are persons.
+ * In this prototype, this model has solely been used to represent a medical doctor
+ * TODO: Make the model handle other medical categories
+ *
+ */
 @Entity
 public class CareProvider extends Person {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    /**
+     * This records a providers area of specialization.
+     * TODO: consider a model for specialization and establish a one-to-one relationship (if one can only have just one speciality)
+     */
     private String specialization;
 
+    /**
+     * This is helpful for legitimacy of a health care provider.
+     * Should not be a mandatory variable
+     */
     @Column(name = "service_number")
     private String serviceNumber;
 

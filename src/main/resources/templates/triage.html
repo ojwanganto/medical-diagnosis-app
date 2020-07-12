@@ -25,6 +25,7 @@
         $(document).ready(function () {
             sex = "[[${sex}]]";
             yob = [[${yob}]];
+            patientId = [[${patientId}]];
 
             $('#tags').prop("disabled", true);
             $('#diagnosis').prop("disabled", true);
@@ -93,7 +94,7 @@
                     },
                     success: function (response) {
                         console.log("Successfully fetched diagnosis");
-                        var diagnosisList = [];
+                        diagnosisList = [];
                         specialityList = [];
                         for (var i = 0; i < response.length; i++) {
                             if (!diagnosisList.includes(response[i].Issue.Name)) {
@@ -105,8 +106,7 @@
                                 }
                             }
                         }
-                        diagnosisString = diagnosisList.join("<br/>")
-                        specialityString = specialityList.join("<br/>")
+
                         $('#diagnosisResult').html(diagnosisList.join("<br/>"))
                         $('#specialization').html(specialityList.join("<br/>"))
                     }
@@ -133,7 +133,46 @@
                     },
                     success: function (response) {
                         console.log("Successfully fetched doctors");
+                        var availableDoctors = response
+                        updateAvailableDoctors(availableDoctors)
+                    }
+                });
+            });
 
+            $("#save-visit").click(function () {
+                var requestURL = getContextPath()+ "patient/addvisit";
+                var xsrf_token = "[[${_csrf.token}]]"
+                var dList = diagnosisList.join(",")
+                var specializationList = specialityList.join(",")
+                var symptomsList = $("#tags").val();
+                var assignedDoctor = $("#doctor").val();
+                var appointmentDate = $("#appointment_date").val();
+
+                var symptomsArray = split(symptomsList);
+                symptomsArray.pop();
+                var visitPayload = {
+                    "patientId" : patientId,
+                    "doctorId" : assignedDoctor,
+                    "diagnosis" : dList,
+                    "symptoms" : symptomsArray.join(","),
+                    "specialization" : specializationList,
+                    "appointmentDate" : appointmentDate
+                }
+                console.log("String: " + JSON.stringify(visitPayload))
+                jQuery.ajax({
+                    url: requestURL,
+                    type: 'POST',
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    beforeSend: function(xhr) {
+                        xhr.setRequestHeader("Accept", "application/json");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                        xhr.setRequestHeader("X-CSRF-TOKEN", xsrf_token);
+                    },
+                    data: {
+                        payload: JSON.stringify(visitPayload)
+                    },
+                    success: function (response) {
                         console.log(response)
                     }
                 });
@@ -175,23 +214,19 @@
                         // add the selected item
                         terms.push(ui.item.value);
                         var symptomObj = getByValue(serverPayload, ui.item.value)
-                        console.log("Object: " + symptomObj)
                         if (symptomObj != null) {
                             selectedValues.push(symptomObj.ID)
                         }
                         // add placeholder to get the comma-and-space at the end
                         terms.push("");
                         this.value = terms.join(", ");
-                        console.log(selectedValues)
                         return false;
                     }
                 });
         });
 
         function getByValue(arr, value) {
-            console.log("Looking for value: " + value)
             for (var i = 0; i < arr.length; i++) {
-                console.log("Current: " + arr[i])
                 if (arr[i].Name == value) {
                     return arr[i];
                 }
@@ -201,6 +236,15 @@
 
         function getContextPath() {
             return window.location.protocol + "//" + window.location.host + "/";
+        }
+
+        function updateAvailableDoctors(availableDoctors) {
+            jQuery('#doctor').empty();
+            var scKey;
+            jQuery('#doctor').append(jQuery("<option></option>").attr("value", "Select doctor...").text(""));
+            for (scKey in availableDoctors) {
+                jQuery('#doctor').append(jQuery("<option></option>").attr("value", availableDoctors[scKey].id).text(availableDoctors[scKey].firstName + " " + availableDoctors[scKey].lastName));
+            }
         }
     </script>
 </head>
@@ -225,7 +269,7 @@
                     <button id="connectToServer">Establish connection to API Medic Server</button>
                 </div>
                 <br/>
-                <span id="alert"></span>
+                <span id="alert" class="alertBox"></span>
                 <br/>
                 <br/>
                 <div class="ui-widget">
@@ -251,20 +295,31 @@
                 <br/>
                 <div style="clear: both">
                     <br/>
+                    <hr/>
 
-                    <p>Book a doctor</p>
-                    <button id="getDoctor" type="button">Get doctors list</button>
-                    <br/>
-                    <br/>
+                    <div class="alertBox">Book Doctor's Appointment</div>
+                    <button id="getDoctor" type="button">Get list of available doctors</button>
+                    <hr/>
+
                     <div>
                         <form>
-                            <select name="doctor" id="doctor">
-                                <option>Select a doctor...</option>
-                            </select>
-                            <br/>
-                            <input type="date" name="appointment_date" id="appointment_date">
-                            <br/>
-                            <button id="save-appointment" type="button" >Save Appointment</button>
+                            <table class="tbl-appointment" width="50%">
+                                <tr>
+                                    <td>Doctor</td>
+                                    <td>
+                                        <select name="doctor" id="doctor">
+                                            <option>Select a doctor...</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Appointment Date</td>
+                                    <td><input type="date" name="appointment_date" id="appointment_date"></td>
+                                </tr>
+                            </table>
+                            <hr/>
+                            <button id="save-visit" type="button" >Save Details</button>
+
                         </form>
                     </div>
 

@@ -18,6 +18,10 @@ import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Controller for person related activities
+ *
+ */
 @Controller
 @RequestMapping(value = "/person/")
 public class PersonController {
@@ -25,22 +29,37 @@ public class PersonController {
     @Autowired
     PersonRepository personRepository;
 
+    /**
+     * Provides a page for registering a person
+     * @param person
+     * @return
+     */
     @GetMapping(value = "register")
     public String addPerson(Person person) {
         return "add-person";
     }
 
+    /**
+     * Handles data from person registration page
+     * @param person
+     * @param result
+     * @param model
+     * @return
+     */
     @PostMapping(value = "add")
     public String savePerson(@Valid Person person, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "add-person";
         }
-        System.out.println("It is getting in the save code block");
         personRepository.save(person);
         return "redirect:list";
-
     }
 
+    /**
+     * Provides a page that shows a list of registered persons
+     * @param model
+     * @return
+     */
     @GetMapping("list")
     public String listPersons(Model model) {
         model.addAttribute("persons", personRepository.findAll());
@@ -48,19 +67,10 @@ public class PersonController {
 
     }
 
-    @GetMapping("triage/{id}")
-    public String triagePatient(@PathVariable("id") Integer id, Model model) {
-        Person person = personRepository.findById(id).get();
-        Date dob = person.getDob();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String dobString = df.format(dob);
-        String yob = dobString.split("-")[0];
-        Integer yobInt = Integer.parseInt(yob);
-        model.addAttribute("sex", person.getSex());
-        model.addAttribute("yob", yobInt);
-        return "triage";
-    }
-
+    /**
+     * Handles date conversions
+     * @param binder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder){
         binder.registerCustomEditor(Date.class,

@@ -7,12 +7,21 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.util.Date;
 
+/**
+ * An extension of the Person model
+ * Holds details about a patient
+ */
 @Entity
 public class Patient extends Person {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    /**
+     * Records internal/external patient numbers
+     * TODO: should be a one-to-many relationship for better flexibility.
+     * TODO: should be modeled together as an identifier to allow for proper deduplication in a centralized setup
+     */
     @Column(name = "patient_number")
     private String patientNumber;
 

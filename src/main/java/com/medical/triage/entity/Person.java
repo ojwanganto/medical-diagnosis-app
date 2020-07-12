@@ -11,7 +11,10 @@ import javax.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
- * Defines properties of a general person
+ * A general model for a person.
+ * Provides the basic person attributes shared across different implementations.
+ * It provides a base model for a system user, care provider, patient, etc
+ *
  */
 @Entity
 public class Person {
@@ -19,6 +22,9 @@ public class Person {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
+    /**
+     * Person name i.e. first, middle, and last
+     */
     @NotBlank(message = "Please provide a first name")
     @Column(name = "first_name")
     private String firstName;
@@ -35,6 +41,10 @@ public class Person {
 
     private String sex;
 
+    /**
+     * Person address attributes
+     * TODO: Add a seperate model for address i.e. Person Address for better flexibility
+     */
     @Column(name = "postal_address")
     private String postalAddress;
 
@@ -43,9 +53,14 @@ public class Person {
 
     @Column(name = "sub_county")
     private String subCounty;
-
     private String ward;
+
+    /**
+     * Contact details
+     * TODO: Provide a separate model for identifiers i.e. PersonIdentifier to adequately handle current and any future identifiers
+     */
     private String email;
+
     @NotBlank(message = "A person identifier i.e. National ID, Passport no is required")
     private String identifer;
 
@@ -173,4 +188,8 @@ public class Person {
     public void setSex(String sex) {
         this.sex = sex;
     }
+
+    // TODO: add a toString, equals methods
+    // TODO: add more details for audit trail i.e. creator, date changed, change reason, retired (for soft delete)
+
 }

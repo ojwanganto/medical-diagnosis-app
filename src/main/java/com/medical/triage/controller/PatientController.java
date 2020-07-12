@@ -3,6 +3,7 @@ package com.medical.triage.controller;
 import com.medical.triage.entity.Patient;
 import com.medical.triage.entity.Person;
 import com.medical.triage.repository.PatientRepository;
+import com.medical.triage.repository.PatientVisitRepository;
 import com.medical.triage.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
@@ -20,6 +21,9 @@ import javax.validation.Valid;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Handles patient related web requests
+ */
 @Controller
 @RequestMapping(value = "/patient/")
 public class PatientController {
@@ -30,11 +34,26 @@ public class PatientController {
     @Autowired
     PatientRepository patientRepository;
 
+    @Autowired
+    PatientVisitRepository patientVisitRepository;
+
+    /**
+     * Returns a page for registering a new patient
+     * @param patient
+     * @return
+     */
     @GetMapping(value = "register")
     public String addPerson(Patient patient) {
         return "add-patient";
     }
 
+    /**
+     * Handles data from patient creation page
+     * @param patient
+     * @param result
+     * @param model
+     * @return
+     */
     @PostMapping(value = "add")
     public String savePerson(@Valid Patient patient, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -45,6 +64,11 @@ public class PatientController {
 
     }
 
+    /**
+     * Returns a page with a list of registered patients
+     * @param model
+     * @return
+     */
     @GetMapping("list")
     public String listPersons(Model model) {
         model.addAttribute("patients", patientRepository.findAll());
@@ -52,6 +76,12 @@ public class PatientController {
 
     }
 
+    /**
+     * Displays the triage page
+     * @param id
+     * @param model
+     * @return
+     */
     @GetMapping("triage/{id}")
     public String triagePatient(@PathVariable("id") Integer id, Model model) {
         Person person = patientRepository.findById(id).get();
@@ -62,9 +92,14 @@ public class PatientController {
         Integer yobInt = Integer.parseInt(yob);
         model.addAttribute("sex", person.getSex());
         model.addAttribute("yob", yobInt);
+        model.addAttribute("patientId", id);
         return "triage";
     }
 
+    /**
+     * Handles date conversions
+     * @param binder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder){
         binder.registerCustomEditor(Date.class,

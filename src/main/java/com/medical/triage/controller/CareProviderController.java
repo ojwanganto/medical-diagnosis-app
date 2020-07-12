@@ -26,6 +26,9 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Handles care provider related web requests
+ */
 @Controller
 @RequestMapping(value = "/provider/")
 public class CareProviderController {
@@ -36,11 +39,23 @@ public class CareProviderController {
     @Autowired
     CareProviderRepository careProviderRepository;
 
+    /**
+     * Provides a form for registering a care provider
+     * @param careProvider
+     * @return web form
+     */
     @GetMapping(value = "register")
     public String addPerson(CareProvider careProvider) {
         return "add-care-provider";
     }
 
+    /**
+     * Handles saving of care provider
+     * @param provider
+     * @param result
+     * @param model
+     * @return a page with a list of registered care providers
+     */
     @PostMapping(value = "add")
     public String savePerson(@Valid CareProvider provider, BindingResult result, Model model) {
         if (result.hasErrors()) {
@@ -51,6 +66,11 @@ public class CareProviderController {
 
     }
 
+    /**
+     * Shows a page with a list of care providers
+     * @param model
+     * @return
+     */
     @GetMapping("list")
     public String listProviders(Model model) {
         model.addAttribute("careProviders", careProviderRepository.findAll());
@@ -58,19 +78,10 @@ public class CareProviderController {
 
     }
 
-    @GetMapping("triage/{id}")
-    public String triagePatient(@PathVariable("id") Integer id, Model model) {
-        Person person = personRepository.findById(id).get();
-        Date dob = person.getDob();
-        SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        String dobString = df.format(dob);
-        String yob = dobString.split("-")[0];
-        Integer yobInt = Integer.parseInt(yob);
-        model.addAttribute("sex", person.getSex());
-        model.addAttribute("yob", yobInt);
-        return "triage";
-    }
-
+    /**
+     * A list of known medical specializations
+     * @return a list of specialization areas
+     */
     @ModelAttribute(name = "specializations")
     public List<String> specializations() {
         List<String> specializationList = Arrays.asList(
@@ -102,6 +113,11 @@ public class CareProviderController {
         );
         return specializationList;
     }
+
+    /**
+     * Handles date conversions
+     * @param binder
+     */
     @InitBinder
     public void initBinder(WebDataBinder binder){
         binder.registerCustomEditor(Date.class,
