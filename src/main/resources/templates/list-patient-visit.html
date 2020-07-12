@@ -23,17 +23,34 @@
     </div>
 </div>
 <div class="container my-2">
+    <h3>Patient Visits</h3>
+    <div>
+        <table>
+            <tr>
+                <td><b>Patient Name</b></td>
+                <td th:text="${patient.firstName + ' ' + patient.lastName + ' ' + patient.middleName}">First Name</td>
+            </tr>
+            <tr>
+                <td><b>DOB</b></td>
+                <td th:text="${#dates.format(patient.dob, 'dd-MMM-yyyy')}">DOB</td>
+            </tr>
+            <tr>
+                <td><b>Sex</b></td>
+                <td th:text="${patient.sex}">Sex</td>
+            </tr>
+        </table>
+    </div>
+    <p class="my-5">
+        <a th:href="@{/patient/triage/{id}(id=${patient.id})}" class="btn btn-primary" style="background-color: cadetblue"><i
+                class="fas fa-arrow-left ml-2"> Back to patient page</i></a>
+        &nbsp;&nbsp;
+        <a href="/index" class="btn btn-primary" style="background-color: cadetblue"><i
+                class="fas fa-home ml-2"> Back Home </i></a>
+    </p>
     <div class="card">
         <div class="card-body">
             <div th:switch="${visits}" class="container my-5">
-                <p class="my-5">
 
-                    <a th:href="@{/patient/triage/{id}(id=${patientId})}" class="btn btn-primary" style="background-color: cadetblue"><i
-                            class="fas fa-arrow-left ml-2"> Back to patient page</i></a>
-                    &nbsp;&nbsp;
-                    <a href="/index" class="btn btn-primary" style="background-color: cadetblue"><i
-                            class="fas fa-home ml-2"> Back Home </i></a>
-                </p>
                 <div class="col-md-10">
                     <h2 th:case="null">No Doctor yet!</h2>
                     <div th:case="*">

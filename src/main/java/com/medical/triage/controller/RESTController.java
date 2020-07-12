@@ -143,7 +143,8 @@ public class RESTController {
             v.setAppointmentDate(appointmentDate);
         }
 
-        String result = "{'result':'OK'}";
+
+        String result = "{\"result\":\"OK\"}";
         // save visit
         try {
             patientVisitRepository.save(v);

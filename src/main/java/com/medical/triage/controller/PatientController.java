@@ -86,7 +86,7 @@ public class PatientController {
      */
     @GetMapping("triage/{id}")
     public String triagePatient(@PathVariable("id") Integer id, Model model) {
-        Person person = patientRepository.findById(id).get();
+        Patient person = patientRepository.findById(id).get();
         Date dob = person.getDob();
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
         String dobString = df.format(dob);
@@ -94,7 +94,7 @@ public class PatientController {
         Integer yobInt = Integer.parseInt(yob);
         model.addAttribute("sex", person.getSex());
         model.addAttribute("yob", yobInt);//this is required by apimedic
-        model.addAttribute("patientId", id);
+        model.addAttribute("patient", person);
         return "triage";
     }
 
@@ -106,9 +106,10 @@ public class PatientController {
      */
     @GetMapping("visits/{id}")
     public String getPatientVisits(@PathVariable("id") Integer id, Model model) {
-        List<PatientVisit> patientVisits = patientVisitRepository.findPatientVisitByPatient(patientRepository.findById(id).get());
+        Patient patient = patientRepository.findById(id).get();
+        List<PatientVisit> patientVisits = patientVisitRepository.findPatientVisitByPatient(patient);
         model.addAttribute("visits", patientVisits);
-        model.addAttribute("patientId", id);
+        model.addAttribute("patient", patient);
         return "list-patient-visit";
     }
 
