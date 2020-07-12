@@ -39,8 +39,8 @@
                 var uri = "https://authservice.priaid.ch/login";
                 var uri_sandbox = "https://sandbox-authservice.priaid.ch/login";
                 var uri_symptoms = "https://sandbox-healthservice.priaid.ch/symptoms";
-                var api_key = "ojwangwachiaje@gmail.com";
-                var secret_key = "Yt3e2HLq7m9MKj4c8";
+                var api_key = "ojwangwachiaje@gmail.com";// this should be in the properties file
+                var secret_key = "Yt3e2HLq7m9MKj4c8";// this should be in the properties file
                 var computedHash = CryptoJS.HmacMD5(uri_sandbox, secret_key);
                 var computedHashString = computedHash.toString(CryptoJS.enc.Base64);
 
@@ -117,7 +117,6 @@
                 var requestURL = getContextPath()+ "provider/specialization";
                 var xsrf_token = "[[${_csrf.token}]]"
                 var qryStr = JSON.stringify(specialityList)
-                console.log("String: " + qryStr)
                 jQuery.ajax({
                     url: requestURL,
                     type: 'POST',
@@ -174,9 +173,10 @@
                         payload: JSON.stringify(visitPayload)
                     },
                     success: function (response) {
-                        console.log("URL: " + visitsURL)
-                        window.location.replace(visitsURL); // show visits page
-                    },
+                        $("#alert").html("Patient visit saved successfully")
+                        $("#alert").focus()
+                        $(this).attr("disabled", true)
+                    }
                 });
             });
 
@@ -333,7 +333,7 @@
                                 </tr>
                             </table>
                             <hr/>
-                            <button id="save-visit" type="button" >Save Details</button>
+                            <button id="save-visit" type="button" >Save Details</button><span id="save-visit-alert" class="alertBox"></span>
 
                         </form>
                     </div>

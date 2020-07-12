@@ -143,10 +143,12 @@ public class RESTController {
             v.setAppointmentDate(appointmentDate);
         }
 
+        String result = "{'result':'OK'}";
         // save visit
         try {
             patientVisitRepository.save(v);
-            return new ResponseEntity<>("Patient visit created successfully", HttpStatus.OK);
+
+            return new ResponseEntity<String>(result, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }

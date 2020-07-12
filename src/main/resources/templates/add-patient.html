@@ -30,19 +30,24 @@
                 <form action="#" th:action="@{/patient/add}" th:object="${patient}" method="post">
                     <div class="row">
                         <div class="form-group col-md-8">
-                            <label for="firstName" class="col-form-label">First Name</label> <input type="text" th:field="*{firstName}" class="form-control" id="firstName" placeholder="First Name"> <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger"></span>
+                            <label for="firstName" class="col-form-label">First Name</label> <input type="text" th:required="required" th:field="*{firstName}" class="form-control" id="firstName" placeholder="First Name"> <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="middleName" class="col-form-label">Middle Name</label> <input type="text" th:field="*{middleName}" class="form-control" id="middleName" placeholder="Middle Name"> <span th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}" class="text-danger"></span>
+                            <label for="middleName" class="col-form-label">Middle Name</label> <input type="text" th:required="required" th:field="*{middleName}" class="form-control" id="middleName" placeholder="Middle Name"> <span th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="lastName" class="col-form-label">Last Name</label> <input type="text" th:field="*{lastName}" class="form-control" id="lastName" placeholder="Last Name"> <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></span>
+                            <label for="lastName" class="col-form-label">Last Name</label> <input type="text" th:required="required" th:field="*{lastName}" class="form-control" id="lastName" placeholder="Last Name"> <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="sex" class="col-form-label">Sex</label> <input type="text" th:field="*{sex}" class="form-control" id="sex" placeholder="sex"> <span th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}" class="text-danger"></span>
-                        </div>
+                            <label for="sex" class="col-form-label">Sex</label>
+                            <select th:field="*{sex}" class="form-control" id="sex" th:required="required">
+                                <option value="">Please select...</option>
+                                <option th:value="'male'" th:text="Male"></option>
+                                <option th:value="'female'" th:text="Female"></option>
+                            </select>
+                            <span th:if="${#fields.hasErrors('sex')}" th:errors="*{sex}" class="text-danger"></span>                        </div>
                         <div class="form-group col-md-8">
-                            <label for="dob" class="col-form-label">DOB</label> <input type="date" th:field="*{dob}" class="form-control" id="dob" placeholder="DOB"> <span th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></span>
+                            <label for="dob" class="col-form-label">DOB</label> <input type="date" th:field="*{dob}" th:required="required" class="form-control" id="dob" placeholder="DOB"> <span th:if="${#fields.hasErrors('dob')}" th:errors="*{dob}" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-8">
                             <label for="email" class="col-form-label">Email</label> <input type="text" th:field="*{email}" class="form-control" id="email" placeholder="Email"> <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="text-danger"></span>
@@ -57,7 +62,7 @@
                             <label for="subCounty" class="col-form-label">Sub-County</label> <input type="text" th:field="*{subCounty}" class="form-control" id="subCounty" placeholder="Sub-County"> <span th:if="${#fields.hasErrors('subCounty')}" th:errors="*{subCounty}" class="text-danger"></span>
                         </div>
                         <div class="form-group col-md-8">
-                            <label for="county" class="col-form-label">Patient No</label> <input type="text" th:field="*{patientNumber}" class="form-control" id="patientNumber" placeholder="Patient No"> <span th:if="${#fields.hasErrors('patientNumber')}" th:errors="*{patientNumber}" class="text-danger"></span>
+                            <label for="county" class="col-form-label">Patient No</label> <input type="text" th:field="*{patientNumber}" th:required="required" class="form-control" id="patientNumber" placeholder="Patient No"> <span th:if="${#fields.hasErrors('patientNumber')}" th:errors="*{patientNumber}" class="text-danger"></span>
                         </div>
 
                         <div class="col-md-6">
