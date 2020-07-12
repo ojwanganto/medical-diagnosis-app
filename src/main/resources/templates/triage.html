@@ -141,6 +141,7 @@
 
             $("#save-visit").click(function () {
                 var requestURL = getContextPath()+ "patient/addvisit";
+                var visitsURL = getContextPath()+ "patient/visits/" + patientId;
                 var xsrf_token = "[[${_csrf.token}]]"
                 var dList = diagnosisList.join(",")
                 var specializationList = specialityList.join(",")
@@ -158,7 +159,7 @@
                     "specialization" : specializationList,
                     "appointmentDate" : appointmentDate
                 }
-                console.log("String: " + JSON.stringify(visitPayload))
+
                 jQuery.ajax({
                     url: requestURL,
                     type: 'POST',
@@ -173,8 +174,9 @@
                         payload: JSON.stringify(visitPayload)
                     },
                     success: function (response) {
-                        console.log(response)
-                    }
+                        console.log("URL: " + visitsURL)
+                        window.location.replace(visitsURL); // show visits page
+                    },
                 });
             });
 
@@ -262,9 +264,22 @@
 
 <div class="container my-5">
     <h3>Triage and Appointment scheduling</h3>
+    <p class="my-5">
+
+        <a th:href="@{/patient/visits/{id}(id=${patientId})}" class="btn btn-primary" style="background-color: cadetblue"><i
+                class="fas fa-list ml-2"> View patient visits</i></a>
+        &nbsp;&nbsp;
+        <a href="/patient/register" class="btn btn-primary" style="background-color: cadetblue"><i
+                class="fas fa-user-plus ml-2"> Add Patient</i></a>
+        &nbsp;&nbsp;
+        <a href="/index" class="btn btn-primary" style="background-color: cadetblue"><i
+                class="fas fa-home ml-2"> Back Home </i></a>
+    </p>
     <div class="card">
         <div class="card-body">
+
             <div class="col-md-10">
+
                 <div>
                     <button id="connectToServer">Establish connection to API Medic Server</button>
                 </div>

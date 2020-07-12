@@ -28,11 +28,11 @@
             <div th:switch="${careProviders}" class="container my-5">
                 <p class="my-5">
 
-                    <a href="/patient/register" class="btn btn-primary"><i
-                            class="fas fa-user-plus ml-2"> Add Patient</i></a>
+                    <a href="/provider/register" class="btn btn-primary" style="background-color: cadetblue"><i
+                            class="fas fa-user-md ml-2"> Add Doctor</i></a>
                     &nbsp;&nbsp;
-                    <a href="/provider/register" class="btn btn-primary"><i
-                            class="fas fa-user-plus ml-2"> Add Doctor </i></a>
+                    <a href="/index" class="btn btn-primary" style="background-color: cadetblue"><i
+                            class="fas fa-home ml-2"> Back Home </i></a>
                 </p>
                 <div class="col-md-10">
                     <h2 th:case="null">No Doctor yet!</h2>

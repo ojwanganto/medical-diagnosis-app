@@ -108,6 +108,7 @@ public class PatientController {
     public String getPatientVisits(@PathVariable("id") Integer id, Model model) {
         List<PatientVisit> patientVisits = patientVisitRepository.findPatientVisitByPatient(patientRepository.findById(id).get());
         model.addAttribute("visits", patientVisits);
+        model.addAttribute("patientId", id);
         return "list-patient-visit";
     }
 
